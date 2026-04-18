@@ -11,8 +11,7 @@ jobs:
           Expand-Archive ngrok.zip
           ./ngrok/ngrok.exe authtoken $Token
           Start-Process ./ngrok/ngrok.exe -ArgumentList "tcp 3389"
-          Write-Host "Wait a moment..."
-      - name: Connect to RDP
+      - name: Connect
         run: |
           $response = Invoke-RestMethod -Uri http://localhost:4040/api/tunnels
           $url = $response.tunnels[0].public_url
@@ -20,4 +19,3 @@ jobs:
           Write-Host "User: runneradmin"
           Write-Host "Pass: Password123!"
           Start-Sleep -Seconds 21600
-          
