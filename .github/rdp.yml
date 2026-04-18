@@ -1,0 +1,22 @@
+name: AWS
+on: workflow_dispatch
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Preparing
+        run: |
+          $Token = "${{ secrets.NGROK_AUTH_TOKEN }}"
+          Invoke-WebRequest https://bin.equinox.io/c/4VmD4z7iaBv/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
+          Expand-Archive ngrok.zip
+          ./ngrok/ngrok.exe authtoken $Token
+          Start-Process ./ngrok/ngrok.exe -ArgumentList "tcp 3389"
+      - name: Connect
+        run: |
+          $response = Invoke-RestMethod -Uri http://localhost:4040/api/tunnels
+          $url = $response.tunnels[0].public_url
+          Write-Host "Address: $url"
+          Write-Host "User: runneradmin"
+          Write-Host "Pass: Password123!"
+          Start-Sleep -Seconds 21600
+          
